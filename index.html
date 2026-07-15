@@ -292,15 +292,16 @@
     <p class="sec-sub reveal">// who is running this thing</p>
     <div class="about-grid">
       <div class="reveal">
-        <p>I'm Sachit. I build software that listens — to <b>markets</b> (quant research and backtesting tooling with MAIF at UMass), to <b>heartbeats</b> (topological data analysis on ECG signals, which is donut math for arrhythmias, and yes, it works), and to <b>music</b> (a noir hardware deck of a player called <a href="https://github.com/sachittumuluri/cody-cartridge" target="_blank" rel="noopener">cody-cartridge</a>).</p>
-        <p>Right now most of the tape is going to <b>Vega Labs</b> — AI agents for sales pipelines. My whole philosophy fits on a tape label: <b>judgment in the model, rules in code, receipts for everything.</b></p>
-        <p>Previously JPMorgan Chase and PIM Brands. I like systems that are verifiable, tools that feel like instruments, and READMEs that don't lie.</p>
+        <p>I'm Sachit — CS, data science, and statistics at UMass Amherst. I build software that listens: to <b>markets</b> (senior analyst at MAIF, the fund's only sophomore on the senior desk — I led our standardized backtesting framework and shipped a multi-agent RL system for VIX futures), to <b>heartbeats</b> (IEEE-published research detecting ventricular tachycardia with topology — donut math, 75 patients, it works), and to <b>music</b> (a noir hardware deck of a player called <a href="https://github.com/sachittumuluri/cody-cartridge" target="_blank" rel="noopener">cody-cartridge</a>).</p>
+        <p>I also run engineering on <b>SmartChart</b> — a provisionally patented computer-vision app that does EMT paperwork so EMTs don't have to. 350 users, 37 cities. Nights go to <b>Vega Labs</b> — AI agents for sales pipelines. The philosophy fits on a tape label: <b>judgment in the model, rules in code, receipts for everything.</b></p>
+        <p>USACO Platinum. Meta Hacker Cup round 3. Off-deck: chess endgames, transit-network design, contrast therapy. I like systems that are verifiable, tools that feel like instruments, and READMEs that don't lie.</p>
       </div>
       <div class="readout reveal" role="table" aria-label="deck settings">
         <div class="row"><span class="k">INPUT</span><span class="v">markets / ecg / audio</span></div>
         <div class="row"><span class="k">OUTPUT</span><span class="v">decisions</span></div>
-        <div class="row"><span class="k">EQ</span><span class="v">noir</span></div>
-        <div class="row"><span class="k">LOOP</span><span class="v">always building</span></div>
+        <div class="row"><span class="k">DESK</span><span class="v">maif — $50k aum</span></div>
+        <div class="row"><span class="k">RANK</span><span class="v">usaco platinum</span></div>
+        <div class="row"><span class="k">PRESS</span><span class="v">ieee proceedings</span></div>
         <div class="row"><span class="k">REC</span><span class="v"><span class="dot">●</span> vega labs</span></div>
         <div class="row"><span class="k">BASE</span><span class="v">umass amherst</span></div>
       </div>
@@ -311,11 +312,23 @@
     <h2 class="sec-title reveal">the rack</h2>
     <p class="sec-sub reveal">// six tapes, all killer, no filler</p>
     <div class="rack">
-      <a class="tape reveal" href="https://github.com/sachittumuluri/cody-cartridge" target="_blank" rel="noopener">
-        <div class="label"><div class="side"><span>SIDE A</span><span>C-90</span></div><h3>cody-cartridge</h3></div>
+      <a class="tape reveal" href="https://github.com/sachittumuluri/strattrust" target="_blank" rel="noopener">
+        <div class="label"><div class="side"><span>QUANT DESK · SIDE A</span><span>C-60</span></div><h3>strattrust</h3></div>
         <div class="window"><span class="reel"></span><span class="reel"></span></div>
-        <p>A Mac music player cosplaying as noir hardware. Local files only, works offline, the vibes are non-negotiable.</p>
-        <div class="foot"><span class="fmt">electron · react · ts</span><span class="go">play ▸</span></div>
+        <p>A local-first validation layer for trading strategies — reproducible scorecards another analyst can re-run. If it can't survive a re-run, it wasn't alpha.</p>
+        <div class="foot"><span class="fmt">python · docker</span><span class="go">play ▸</span></div>
+      </a>
+      <a class="tape reveal" href="https://github.com/sachittumuluri/maif-backtester" target="_blank" rel="noopener">
+        <div class="label"><div class="side"><span>QUANT DESK · SIDE B</span><span>C-60</span></div><h3>maif-backtester</h3></div>
+        <div class="window"><span class="reel"></span><span class="reel"></span></div>
+        <p>Same tape, side B: the MAIF-branded framework strattrust grew out of. Event-driven sim, OCO brackets, Monte Carlo, GAN market regimes.</p>
+        <div class="foot"><span class="fmt">python · quant</span><span class="go">play ▸</span></div>
+      </a>
+      <a class="tape reveal" href="https://github.com/sachittumuluri/VentriCode" target="_blank" rel="noopener">
+        <div class="label"><div class="side"><span>SIDE A</span><span>C-120</span></div><h3>VentriCode</h3></div>
+        <div class="window"><span class="reel"></span><span class="reel"></span></div>
+        <p>Ventricular tachycardia detection via Takens embeddings + persistent homology, 75 patients. Donut math on heartbeats — IEEE-published.</p>
+        <div class="foot"><span class="fmt">python · tda · ecg</span><span class="go">play ▸</span></div>
       </a>
       <a class="tape reveal" href="https://github.com/sachittumuluri/vega-rules" target="_blank" rel="noopener">
         <div class="label"><div class="side"><span>SIDE A</span><span>C-60</span></div><h3>vega-rules</h3></div>
@@ -323,29 +336,17 @@
         <p>Deterministic detection rules for a sales agent. The boring half of AI — the half that has to be right.</p>
         <div class="foot"><span class="fmt">python · agents</span><span class="go">play ▸</span></div>
       </a>
-      <a class="tape reveal" href="https://github.com/sachittumuluri/strattrust" target="_blank" rel="noopener">
-        <div class="label"><div class="side"><span>SIDE B</span><span>C-60</span></div><h3>strattrust</h3></div>
+      <a class="tape reveal" href="https://github.com/sachittumuluri/cody-cartridge" target="_blank" rel="noopener">
+        <div class="label"><div class="side"><span>SIDE A</span><span>C-90</span></div><h3>cody-cartridge</h3></div>
         <div class="window"><span class="reel"></span><span class="reel"></span></div>
-        <p>Scorecards that make trading strategies show their work. If it can't survive a re-run, it wasn't alpha.</p>
-        <div class="foot"><span class="fmt">python · jupyter</span><span class="go">play ▸</span></div>
-      </a>
-      <a class="tape reveal" href="https://github.com/sachittumuluri/maif-backtester" target="_blank" rel="noopener">
-        <div class="label"><div class="side"><span>SIDE B</span><span>C-90</span></div><h3>maif-backtester</h3></div>
-        <div class="window"><span class="reel"></span><span class="reel"></span></div>
-        <p>MAIF Quant Lab's backtester and hosted research terminal — strategy simulation with a live front end.</p>
-        <div class="foot"><span class="fmt">python · quant</span><span class="go">play ▸</span></div>
-      </a>
-      <a class="tape reveal" href="https://github.com/sachittumuluri/VentriCode" target="_blank" rel="noopener">
-        <div class="label"><div class="side"><span>SIDE A</span><span>C-120</span></div><h3>VentriCode</h3></div>
-        <div class="window"><span class="reel"></span><span class="reel"></span></div>
-        <p>Detecting ventricular tachycardia with topological data analysis. Donut math on heartbeats — works better than it has any right to.</p>
-        <div class="foot"><span class="fmt">python · tda · ecg</span><span class="go">play ▸</span></div>
+        <p>A Mac music player cosplaying as noir hardware. Local files only, works offline, the vibes are non-negotiable.</p>
+        <div class="foot"><span class="fmt">electron · react · ts</span><span class="go">play ▸</span></div>
       </a>
       <a class="tape reveal" href="https://github.com/sachittumuluri/USACOSolves" target="_blank" rel="noopener">
         <div class="label"><div class="side"><span>SIDE B</span><span>C-120</span></div><h3>USACOSolves</h3></div>
         <div class="window"><span class="reel"></span><span class="reel"></span></div>
-        <p>Years of USACO in C++17. Bessie the cow has seen things she cannot unsee.</p>
-        <div class="foot"><span class="fmt">c++17 · algorithms</span><span class="go">play ▸</span></div>
+        <p>The USACO Platinum paper trail, in C++17. Bessie the cow has seen things she cannot unsee.</p>
+        <div class="foot"><span class="fmt">c++17 · platinum</span><span class="go">play ▸</span></div>
       </a>
     </div>
   </section>
@@ -356,7 +357,8 @@
     <div class="patch reveal">
       <p>Building something at the intersection of <b>ML, markets, or medicine</b> — or just want to argue about music players? Send signal.</p>
       <div class="patch-links">
-        <a class="btn hot" href="mailto:sachi11umuluri@gmail.com">✉ email ▸</a>
+        <a class="btn hot" href="mailto:sstumuluri@umass.edu">✉ email ▸</a>
+        <a class="btn cold" href="https://www.linkedin.com/in/sachit-tumuluri" target="_blank" rel="noopener">linkedin ▸</a>
         <a class="btn cold" href="https://github.com/sachittumuluri" target="_blank" rel="noopener">github ▸</a>
       </div>
     </div>
@@ -447,6 +449,7 @@
     ['03 — making backtests honest', '2:58', 'side B'],
     ['04 — noir-grade music software', '5:13', 'side B'],
     ['05 — bessie does graph theory', '3:21', 'side B'],
+    ['06 — vix futures, hold the panic', '3:33', 'side B'],
   ];
   const trackEl = document.getElementById('track');
   const lenEl = document.getElementById('track-len');
