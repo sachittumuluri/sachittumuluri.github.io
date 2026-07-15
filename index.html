@@ -3,412 +3,478 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Sachit Tumuluri — signals in, decisions out</title>
-<meta name="description" content="Sachit Tumuluri — machine learning, quantitative research, and full-stack builds. AI agents at Vega Labs, quant tooling with MAIF, TDA on ECG signals."/>
-<meta property="og:title" content="Sachit Tumuluri"/>
-<meta property="og:description" content="Machine learning × quantitative research × full-stack builds."/>
+<title>sachit tumuluri — signal deck</title>
+<meta name="description" content="Sachit Tumuluri builds software that listens — to markets, heartbeats, and music. AI agents at Vega Labs, quant tooling with MAIF, topology on ECGs."/>
+<meta property="og:title" content="sachit tumuluri — signal deck"/>
+<meta property="og:description" content="markets · heartbeats · music — it's all signals"/>
 <meta property="og:type" content="website"/>
 <meta property="og:url" content="https://sachittumuluri.github.io"/>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230c1226'/%3E%3Ctext x='32' y='42' font-family='-apple-system,Segoe UI,Arial' font-size='26' font-weight='800' text-anchor='middle' fill='%234dd8ff'%3EST%3C/text%3E%3C/svg%3E"/>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230a0a10'/%3E%3Ctext x='32' y='42' font-family='Menlo,monospace' font-size='24' font-weight='700' text-anchor='middle' fill='%23ffb454'%3E%E2%96%B6S%3C/text%3E%3C/svg%3E"/>
 <style>
   :root {
-    --bg: #070b18;
-    --bg-2: #0c1226;
-    --panel: #0f172e;
-    --line: #22335f;
-    --text: #dbe4ff;
-    --muted: #8fa2d4;
-    --dim: #5d6f9e;
-    --indigo: #8b7bff;
-    --cyan: #4dd8ff;
-    --pink: #ff5ea8;
-    --grad: linear-gradient(100deg, var(--indigo), var(--cyan) 50%, var(--pink));
+    --bg: #0a0a10;
+    --bg-warm: #14100b;
+    --panel: #131317;
+    --panel-2: #17171d;
+    --line: #2c2620;
+    --amber: #ffb454;
+    --amber-hi: #ffd27d;
+    --red: #ff5e6c;
+    --cream: #f2e8d5;
+    --text: #e8ddc8;
+    --muted: #b3a488;
+    --dim: #6f6353;
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { scroll-behavior: smooth; }
   body {
-    background: var(--bg);
+    background: radial-gradient(1100px 600px at 50% -10%, var(--bg-warm), var(--bg) 60%);
     color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--mono);
+    line-height: 1.65;
     overflow-x: hidden;
-    line-height: 1.6;
   }
-  ::selection { background: rgba(77, 216, 255, 0.25); }
-  #sky { position: fixed; inset: 0; z-index: 0; }
-  .vignette {
+  ::selection { background: rgba(255, 180, 84, 0.3); }
+
+  /* ---------- crt overlay ---------- */
+  .scanlines {
+    position: fixed; inset: 0; z-index: 50; pointer-events: none;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.18) 0 1px, transparent 1px 3px);
+    mix-blend-mode: multiply;
+  }
+  .crt-glow {
     position: fixed; inset: 0; z-index: 1; pointer-events: none;
-    background:
-      radial-gradient(1200px 700px at 70% -10%, rgba(139,123,255,0.10), transparent 60%),
-      radial-gradient(1000px 600px at 15% 110%, rgba(255,94,168,0.07), transparent 60%),
-      radial-gradient(closest-side at 50% 50%, transparent 60%, rgba(3,5,12,0.55));
+    background: radial-gradient(closest-side at 50% 45%, transparent 55%, rgba(0,0,0,0.5));
+    animation: crtflicker 7s infinite;
   }
+  @keyframes crtflicker { 0%,100% { opacity: 1; } 92% { opacity: 1; } 93% { opacity: 0.86; } 94% { opacity: 1; } 96.5% { opacity: 0.92; } 97% { opacity: 1; } }
+
+  /* ---------- boot overlay ---------- */
+  #boot {
+    position: fixed; inset: 0; z-index: 100;
+    background: var(--bg);
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 0 clamp(24px, 12vw, 200px);
+    font-size: clamp(12px, 1.7vw, 15px);
+    color: var(--amber);
+    cursor: pointer;
+    transition: opacity 0.5s ease;
+  }
+  #boot.off { opacity: 0; pointer-events: none; }
+  #boot .line { white-space: pre; min-height: 1.65em; text-shadow: 0 0 8px rgba(255,180,84,0.45); }
+  #boot .skip { position: absolute; bottom: 26px; left: 0; right: 0; text-align: center; color: var(--dim); font-size: 12px; letter-spacing: 2px; }
+
+  /* ---------- nav ---------- */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 40;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px clamp(18px, 4.5vw, 48px);
+    background: linear-gradient(rgba(10,10,16,0.92), rgba(10,10,16,0));
+    font-size: 13px; letter-spacing: 1px;
+  }
+  nav a { color: var(--muted); text-decoration: none; transition: color 0.2s, text-shadow 0.2s; }
+  nav a:hover { color: var(--amber-hi); text-shadow: 0 0 10px rgba(255,180,84,0.5); }
+  .brand { color: var(--amber); }
+  .brand .dot { color: var(--red); animation: recblink 1.6s steps(1) infinite; }
+  @keyframes recblink { 50% { opacity: 0.25; } }
+  nav .links a { margin-left: clamp(12px, 2.4vw, 26px); }
+
   main { position: relative; z-index: 2; }
 
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 10;
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 18px clamp(20px, 5vw, 56px);
-    background: linear-gradient(rgba(7,11,24,0.85), rgba(7,11,24,0));
-    backdrop-filter: blur(2px);
-  }
-  .brand { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 14px; color: var(--dim); text-decoration: none; letter-spacing: 1px; }
-  .brand b { color: var(--cyan); font-weight: 600; }
-  nav .links a {
-    color: var(--muted); text-decoration: none; font-size: 14px; letter-spacing: 0.5px;
-    margin-left: clamp(14px, 2.5vw, 28px); transition: color 0.2s;
-  }
-  nav .links a:hover { color: var(--cyan); }
-
+  /* ---------- hero ---------- */
   .hero {
     min-height: 100svh;
     display: flex; flex-direction: column; justify-content: center; align-items: center;
-    text-align: center; padding: 0 20px; position: relative;
+    text-align: center; padding: 90px 18px 60px; position: relative;
   }
-  .eyebrow {
-    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-    color: var(--cyan); font-size: clamp(13px, 1.6vw, 16px); letter-spacing: 4px; text-transform: lowercase;
-    opacity: 0; animation: rise 0.8s ease 0.2s forwards;
-  }
+  .eyebrow { color: var(--dim); font-size: clamp(12px, 1.6vw, 15px); letter-spacing: 5px; }
+  body.booted .eyebrow { animation: fadeup 0.7s ease 0.1s backwards; }
   h1.name {
-    margin: 18px 0 10px;
-    font-size: clamp(44px, 9.5vw, 108px);
-    font-weight: 800; letter-spacing: 0.02em; line-height: 1.05;
+    margin: 22px 0 14px;
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: clamp(34px, 8.2vw, 92px);
+    letter-spacing: 0.04em;
+    line-height: 1.1;
+    color: var(--amber);
   }
   h1.name .word { display: inline-block; white-space: nowrap; }
-  h1.name .word + .word { margin-left: 0.28em; }
-  h1.name .ch {
-    display: inline-block;
-    background: var(--grad);
-    background-size: 260% 100%;
-    -webkit-background-clip: text; background-clip: text;
-    -webkit-text-fill-color: transparent; color: transparent;
-    opacity: 0; transform: translateY(0.55em) rotate(4deg); filter: blur(8px);
-    animation: chIn 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) forwards, shimmer 7s linear 2.2s infinite;
+  h1.name .word + .word { margin-left: 0.5em; }
+  h1.name .ch { display: inline-block; opacity: 0; }
+  body.booted h1.name .ch { animation: flickon 0.9s steps(1, end) forwards; }
+  h1.name .ch.lit {
+    text-shadow:
+      -1.5px 0 rgba(255,94,108,0.4),
+      1.5px 0 rgba(120,220,255,0.25),
+      0 0 22px rgba(255,180,84,0.55);
   }
-  @keyframes chIn { to { opacity: 1; transform: translateY(0) rotate(0); filter: blur(0); } }
-  @keyframes shimmer { 0% { background-position: 0% 0; } 100% { background-position: 260% 0; } }
-  .underline {
-    width: min(560px, 70vw); height: 2px; margin: 8px auto 26px;
-    background: var(--grad); border-radius: 2px;
-    transform: scaleX(0); transform-origin: center;
-    animation: sweep 1.1s cubic-bezier(0.65, 0, 0.35, 1) 1.5s forwards;
-    box-shadow: 0 0 18px rgba(77,216,255,0.5);
+  @keyframes flickon {
+    0% { opacity: 0; } 8% { opacity: 1; } 14% { opacity: 0.15; }
+    22% { opacity: 1; } 30% { opacity: 0.4; } 38%, 100% { opacity: 1; }
   }
-  @keyframes sweep { to { transform: scaleX(1); } }
-  .type-line {
-    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-    font-size: clamp(14px, 2.2vw, 19px); color: var(--muted);
-    min-height: 1.8em; opacity: 0; animation: rise 0.8s ease 1.9s forwards;
-  }
-  .type-line .caret { display: inline-block; width: 0.55em; height: 1.1em; background: var(--cyan); vertical-align: -0.15em; margin-left: 3px; animation: blink 1.05s steps(1) infinite; border-radius: 1px; }
-  @keyframes blink { 50% { opacity: 0; } }
-  @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
-  .cta-row { margin-top: 40px; display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; opacity: 0; animation: rise 0.8s ease 2.3s forwards; }
-  .btn {
-    padding: 12px 26px; border-radius: 10px; text-decoration: none; font-size: 15px; font-weight: 600;
-    letter-spacing: 0.5px; transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
-  }
-  .btn.primary { background: var(--grad); color: #06080f; box-shadow: 0 6px 28px rgba(139,123,255,0.35); }
-  .btn.primary:hover { transform: translateY(-2px); box-shadow: 0 10px 36px rgba(77,216,255,0.45); }
-  .btn.ghost { color: var(--text); border: 1px solid var(--line); background: rgba(15,23,46,0.5); }
-  .btn.ghost:hover { border-color: var(--cyan); color: var(--cyan); transform: translateY(-2px); }
-  .scroll-hint {
-    position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%);
-    color: var(--dim); font-size: 22px; text-decoration: none;
-    animation: bob 2.2s ease-in-out infinite; opacity: 0; animation: bob 2.2s ease-in-out 3s infinite, rise 1s ease 3s forwards;
-  }
-  @keyframes bob { 0%,100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, 9px); } }
+  @keyframes fadeup { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  .tagline { color: var(--muted); font-size: clamp(13px, 1.9vw, 17px); letter-spacing: 2px; }
+  body.booted .tagline { animation: fadeup 0.7s ease 1.4s backwards; }
+  .tagline .cur { display: inline-block; width: 0.55em; height: 1.05em; background: var(--amber); vertical-align: -0.12em; margin-left: 4px; animation: recblink 1.1s steps(1) infinite; }
 
-  section { max-width: 1060px; margin: 0 auto; padding: clamp(70px, 12vh, 130px) clamp(20px, 5vw, 40px); }
-  .sec-title {
-    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-    font-size: clamp(22px, 3.2vw, 30px); font-weight: 700; margin-bottom: 34px; letter-spacing: 1px;
+  /* now playing deck */
+  .deck {
+    margin-top: 46px; width: min(560px, 92vw);
+    border: 1px solid var(--line); border-radius: 12px;
+    background: linear-gradient(170deg, var(--panel-2), var(--panel));
+    box-shadow: 0 20px 60px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.04);
+    text-align: left; padding: 16px 20px 18px;
   }
-  .sec-title .hash { color: var(--pink); margin-right: 10px; }
-  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  body.booted .deck { animation: fadeup 0.8s ease 1.9s backwards; }
+  .deck .head { display: flex; justify-content: space-between; font-size: 11px; letter-spacing: 3px; color: var(--dim); margin-bottom: 10px; }
+  .deck .head .rec { color: var(--red); animation: recblink 1.6s steps(1) infinite; }
+  .deck .track { color: var(--amber-hi); font-size: clamp(14px, 2vw, 16px); text-shadow: 0 0 12px rgba(255,180,84,0.35); min-height: 1.7em; }
+  .deck .meta { display: flex; justify-content: space-between; color: var(--dim); font-size: 12px; margin-top: 2px; }
+  .deck .bar { height: 3px; background: #24201a; border-radius: 3px; margin-top: 10px; overflow: hidden; }
+  .deck .bar i { display: block; height: 100%; width: 100%; background: linear-gradient(90deg, var(--amber), var(--red)); transform-origin: left; transform: scaleX(0); }
+  .deck .bar i.play { animation: progress 7s linear forwards; }
+  @keyframes progress { to { transform: scaleX(1); } }
+  .deck .vu { display: flex; gap: 4px; align-items: flex-end; height: 18px; margin-top: 12px; }
+  .vu i { width: 5px; background: var(--amber); border-radius: 1.5px; opacity: 0.85; animation: vu 0.9s ease-in-out infinite alternate; }
+  .vu i:nth-child(2n) { background: var(--amber-hi); }
+  .vu i:nth-child(7n) { background: var(--red); }
+  @keyframes vu { from { height: 3px; } to { height: 18px; } }
+
+  .scroll-hint { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); color: var(--dim); text-decoration: none; font-size: 12px; letter-spacing: 3px; }
+  body.booted .scroll-hint { animation: fadeup 1s ease 2.6s backwards; }
+  .scroll-hint:hover { color: var(--amber); }
+
+  /* ---------- sections ---------- */
+  section { max-width: 1020px; margin: 0 auto; padding: clamp(64px, 11vh, 120px) clamp(18px, 4.5vw, 40px); }
+  .sec-title { font-size: clamp(20px, 3vw, 27px); font-weight: 700; color: var(--cream); letter-spacing: 2px; margin-bottom: 8px; }
+  .sec-title::before { content: "▸ "; color: var(--red); }
+  .sec-sub { color: var(--dim); font-size: 13px; letter-spacing: 2px; margin-bottom: 36px; }
+  .reveal { opacity: 0; transform: translateY(26px); transition: opacity 0.7s ease, transform 0.7s ease; }
   .reveal.in { opacity: 1; transform: translateY(0); }
 
-  .about-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 40px; align-items: start; }
-  .about-grid p { color: var(--muted); margin-bottom: 16px; font-size: 17px; }
-  .about-grid p b { color: var(--text); }
-  .fact-card {
-    border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px;
-    background: linear-gradient(160deg, rgba(15,23,46,0.9), rgba(12,18,38,0.7));
-    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 13.5px;
+  /* about */
+  .about-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 38px; align-items: start; }
+  .about-grid p { color: var(--muted); margin-bottom: 16px; font-size: 15px; }
+  .about-grid p b, .about-grid p a { color: var(--amber-hi); font-weight: 600; text-decoration: none; }
+  .about-grid p a { border-bottom: 1px dashed rgba(255,180,84,0.4); }
+  .about-grid p a:hover { text-shadow: 0 0 10px rgba(255,180,84,0.5); }
+  .readout {
+    border: 1px solid var(--line); border-radius: 12px; padding: 20px 22px;
+    background: linear-gradient(170deg, var(--panel-2), var(--panel));
+    font-size: 13px; box-shadow: 0 14px 40px rgba(0,0,0,0.4);
   }
-  .fact-card .k { color: var(--dim); }
-  .fact-card .v { color: var(--cyan); }
-  .fact-card div { padding: 7px 0; border-bottom: 1px dashed rgba(34,51,95,0.6); }
-  .fact-card div:last-child { border-bottom: none; }
+  .readout .row { display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; border-bottom: 1px dashed rgba(44,38,32,0.9); }
+  .readout .row:last-child { border-bottom: none; }
+  .readout .k { color: var(--dim); letter-spacing: 1px; }
+  .readout .v { color: var(--amber); text-align: right; }
+  .readout .v .dot { color: var(--red); animation: recblink 1.6s steps(1) infinite; }
 
-  .proj-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 22px; }
-  .card {
-    position: relative; display: block; text-decoration: none;
-    border: 1px solid var(--line); border-radius: 16px; padding: 26px 26px 22px;
-    background: linear-gradient(165deg, rgba(15,23,46,0.92), rgba(10,15,32,0.85));
+  /* the rack: cassettes */
+  .rack { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 22px; }
+  .tape {
+    display: block; text-decoration: none; position: relative;
+    border: 1px solid var(--line); border-radius: 14px;
+    background: linear-gradient(170deg, #1a1a20, #121216);
+    padding: 18px 18px 16px;
     transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
-    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.04);
   }
-  .card::before {
-    content: ""; position: absolute; inset: 0;
-    background: radial-gradient(500px 200px at var(--mx, 50%) var(--my, 0%), rgba(77,216,255,0.09), transparent 65%);
-    opacity: 0; transition: opacity 0.3s;
+  .tape:hover { transform: translateY(-5px) rotate(-0.4deg); border-color: rgba(255,180,84,0.5); box-shadow: 0 22px 50px rgba(0,0,0,0.6); }
+  .tape .label {
+    background: var(--cream); color: #1d1812; border-radius: 6px;
+    padding: 10px 14px 9px; transform: rotate(-0.5deg);
+    box-shadow: 0 2px 0 rgba(0,0,0,0.35);
   }
-  .card:hover { transform: translateY(-6px); border-color: rgba(77,216,255,0.55); box-shadow: 0 18px 44px rgba(3,6,16,0.7); }
-  .card:hover::before { opacity: 1; }
-  .card .glyph { font-size: 26px; }
-  .card h3 { margin: 12px 0 8px; font-size: 19px; color: var(--text); font-weight: 700; }
-  .card h3 .arrow { color: var(--cyan); opacity: 0; transform: translateX(-6px); display: inline-block; transition: all 0.25s; }
-  .card:hover h3 .arrow { opacity: 1; transform: translateX(2px); }
-  .card p { color: var(--muted); font-size: 14.5px; margin-bottom: 16px; }
-  .tags { display: flex; flex-wrap: wrap; gap: 8px; }
-  .tag {
-    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 11.5px;
-    color: var(--cyan); background: rgba(77,216,255,0.08); border: 1px solid rgba(77,216,255,0.22);
-    padding: 3px 10px; border-radius: 999px; letter-spacing: 0.5px;
+  .tape .label .side { font-size: 10px; letter-spacing: 2px; color: #8a7357; display: flex; justify-content: space-between; }
+  .tape .label h3 { font-size: 16.5px; font-weight: 700; letter-spacing: 0.5px; margin-top: 1px; }
+  .tape .window {
+    margin: 14px 8px 10px; height: 54px; border-radius: 8px;
+    background: #0c0c11; border: 1px solid #26262e;
+    display: flex; align-items: center; justify-content: space-between; padding: 0 26px;
+    position: relative; overflow: hidden;
   }
+  .tape .window::after { content: ""; position: absolute; left: 50%; top: 50%; width: 34%; height: 3px; transform: translate(-50%,-50%); background: #2c2117; }
+  .reel {
+    width: 34px; height: 34px; border-radius: 50%;
+    border: 2px solid #3d3d47; position: relative; z-index: 1; background: #16161b;
+  }
+  .reel::before {
+    content: ""; position: absolute; inset: 6px; border-radius: 50%;
+    border: 2px dashed rgba(255,180,84,0.55);
+  }
+  .tape:hover .reel::before { animation: spin 1.4s linear infinite; }
+  .tape:hover .reel:last-child::before { animation-duration: 1.9s; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .tape p { color: var(--muted); font-size: 13.5px; padding: 0 4px; margin-bottom: 12px; }
+  .tape .foot { display: flex; justify-content: space-between; align-items: center; padding: 0 4px; font-size: 11px; letter-spacing: 1px; }
+  .tape .fmt { color: var(--dim); }
+  .tape .go { color: var(--amber); opacity: 0; transform: translateX(-6px); transition: all 0.25s; }
+  .tape:hover .go { opacity: 1; transform: translateX(0); }
 
-  .contact-box { text-align: center; }
-  .contact-box p { color: var(--muted); max-width: 560px; margin: 0 auto 34px; font-size: 17px; }
-  .contact-links { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; }
+  /* contact */
+  .patch { text-align: center; }
+  .patch p { color: var(--muted); max-width: 540px; margin: 0 auto 32px; font-size: 15px; }
+  .patch p b { color: var(--amber-hi); }
+  .patch-links { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .btn {
+    font-family: var(--mono); font-size: 14px; letter-spacing: 2px; text-decoration: none;
+    padding: 13px 26px; border-radius: 10px; transition: all 0.22s ease;
+  }
+  .btn.hot { background: var(--amber); color: #171208; font-weight: 700; box-shadow: 0 8px 30px rgba(255,180,84,0.28); }
+  .btn.hot:hover { background: var(--amber-hi); transform: translateY(-2px); box-shadow: 0 12px 38px rgba(255,180,84,0.4); }
+  .btn.cold { color: var(--text); border: 1px solid var(--line); background: rgba(23,23,29,0.6); }
+  .btn.cold:hover { border-color: var(--amber); color: var(--amber); transform: translateY(-2px); }
 
   footer {
-    position: relative; z-index: 2; text-align: center; padding: 34px 20px 44px;
-    color: var(--dim); font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 12.5px;
-    border-top: 1px solid rgba(34,51,95,0.5);
+    position: relative; z-index: 2;
+    border-top: 1px solid rgba(44,38,32,0.8);
+    padding: 30px 20px 40px; text-align: center;
+    color: var(--dim); font-size: 12px; letter-spacing: 1.5px;
   }
-  footer .pulse { color: var(--pink); animation: heartbeat 1.6s ease-in-out infinite; display: inline-block; }
-  @keyframes heartbeat { 0%,100% { transform: scale(1); } 12% { transform: scale(1.25); } 24% { transform: scale(1); } 36% { transform: scale(1.18); } 48% { transform: scale(1); } }
+  footer .vu { justify-content: center; margin: 0 auto 14px; display: flex; gap: 4px; align-items: flex-end; height: 16px; }
+  footer .vu i { width: 4px; background: var(--amber); border-radius: 1.5px; opacity: 0.7; animation: vu 0.9s ease-in-out infinite alternate; }
+  footer .vu i:nth-child(5n) { background: var(--red); }
 
-  @media (max-width: 760px) {
+  @media (max-width: 720px) {
     .about-grid { grid-template-columns: 1fr; }
     nav .links a:not(:last-child) { display: none; }
   }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
     html { scroll-behavior: auto; }
-    h1.name .ch { opacity: 1; transform: none; filter: none; }
-    .underline { transform: scaleX(1); }
-    .eyebrow, .type-line, .cta-row, .scroll-hint { opacity: 1; }
-    .reveal { opacity: 1; transform: none; }
+    #boot { display: none; }
+    h1.name .ch, .reveal { opacity: 1 !important; transform: none !important; }
   }
 </style>
 </head>
 <body>
-<canvas id="sky" aria-hidden="true"></canvas>
-<div class="vignette" aria-hidden="true"></div>
+
+<div id="boot" aria-hidden="true">
+  <div id="bootlines"></div>
+  <div class="skip">[ click or press any key to skip ]</div>
+</div>
+
+<div class="scanlines" aria-hidden="true"></div>
+<div class="crt-glow" aria-hidden="true"></div>
 
 <nav>
-  <a class="brand" href="#top">~/<b>sachit</b> — signal deck</a>
+  <a class="brand" href="#top"><span class="dot">●</span> sachit — signal deck</a>
   <div class="links">
-    <a href="#about">about</a>
-    <a href="#projects">projects</a>
-    <a href="#contact">contact</a>
+    <a href="#operator">operator</a>
+    <a href="#rack">the rack</a>
+    <a href="#patch">patch in</a>
     <a href="https://github.com/sachittumuluri" target="_blank" rel="noopener">github ↗</a>
   </div>
 </nav>
 
 <main id="top">
   <header class="hero">
-    <p class="eyebrow">// hi, i build things that listen</p>
-    <h1 class="name" id="name" aria-label="Sachit Tumuluri">Sachit Tumuluri</h1>
-    <div class="underline" aria-hidden="true"></div>
-    <p class="type-line"><span id="typed"></span><span class="caret" aria-hidden="true"></span></p>
-    <div class="cta-row">
-      <a class="btn primary" href="#projects">see the work</a>
-      <a class="btn ghost" href="https://github.com/sachittumuluri" target="_blank" rel="noopener">github profile</a>
+    <p class="eyebrow">&gt; press play</p>
+    <h1 class="name" id="name" aria-label="Sachit Tumuluri">SACHIT TUMULURI</h1>
+    <p class="tagline">signals in, decisions out<span class="cur" aria-hidden="true"></span></p>
+
+    <div class="deck" role="group" aria-label="now playing">
+      <div class="head"><span><span class="rec">●</span> NOW PLAYING</span><span>STEREO · 44.1kHz</span></div>
+      <div class="track" id="track">01 — building vega labs</div>
+      <div class="meta"><span id="tape-side">side A</span><span id="track-len">3:42</span></div>
+      <div class="bar"><i id="progress"></i></div>
+      <div class="vu" aria-hidden="true">
+        <i style="animation-delay:0s"></i><i style="animation-delay:.12s"></i><i style="animation-delay:.05s"></i><i style="animation-delay:.2s"></i><i style="animation-delay:.09s"></i><i style="animation-delay:.16s"></i><i style="animation-delay:.03s"></i><i style="animation-delay:.22s"></i><i style="animation-delay:.07s"></i><i style="animation-delay:.14s"></i><i style="animation-delay:.11s"></i><i style="animation-delay:.19s"></i><i style="animation-delay:.02s"></i><i style="animation-delay:.24s"></i>
+      </div>
     </div>
-    <a class="scroll-hint" href="#about" aria-label="scroll down">▾</a>
+
+    <a class="scroll-hint" href="#operator">▾ liner notes</a>
   </header>
 
-  <section id="about">
-    <h2 class="sec-title reveal"><span class="hash">#</span>about</h2>
+  <section id="operator">
+    <h2 class="sec-title reveal">the operator</h2>
+    <p class="sec-sub reveal">// who is running this thing</p>
     <div class="about-grid">
       <div class="reveal">
-        <p>I build software where <b>signals meet decisions</b> — machine-learning systems, quantitative research tooling, and side projects with far too much personality.</p>
-        <p>Right now that means <b>Vega Labs</b>, where I'm building AI agents for sales pipelines that keep the judgment in the model and the rules in code. Before that: quant research and backtesting infrastructure with <b>MAIF</b>, and applying <b>topological data analysis</b> to ECG signals to detect ventricular tachycardia.</p>
-        <p>I like systems that are verifiable, tools that feel like instruments, and READMEs that don't lie.</p>
+        <p>I'm Sachit. I build software that listens — to <b>markets</b> (quant research and backtesting tooling with MAIF at UMass), to <b>heartbeats</b> (topological data analysis on ECG signals, which is donut math for arrhythmias, and yes, it works), and to <b>music</b> (a noir hardware deck of a player called <a href="https://github.com/sachittumuluri/cody-cartridge" target="_blank" rel="noopener">cody-cartridge</a>).</p>
+        <p>Right now most of the tape is going to <b>Vega Labs</b> — AI agents for sales pipelines. My whole philosophy fits on a tape label: <b>judgment in the model, rules in code, receipts for everything.</b></p>
+        <p>Previously JPMorgan Chase and PIM Brands. I like systems that are verifiable, tools that feel like instruments, and READMEs that don't lie.</p>
       </div>
-      <div class="fact-card reveal">
-        <div><span class="k">location&nbsp;&nbsp;</span> <span class="v">UMass Amherst</span></div>
-        <div><span class="k">building&nbsp;&nbsp;</span> <span class="v">Vega Labs</span></div>
-        <div><span class="k">focus&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <span class="v">ML · quant · agents</span></div>
-        <div><span class="k">previously</span> <span class="v">JPMorgan Chase · PIM Brands</span></div>
-        <div><span class="k">stack&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <span class="v">Python · TS · C++</span></div>
+      <div class="readout reveal" role="table" aria-label="deck settings">
+        <div class="row"><span class="k">INPUT</span><span class="v">markets / ecg / audio</span></div>
+        <div class="row"><span class="k">OUTPUT</span><span class="v">decisions</span></div>
+        <div class="row"><span class="k">EQ</span><span class="v">noir</span></div>
+        <div class="row"><span class="k">LOOP</span><span class="v">always building</span></div>
+        <div class="row"><span class="k">REC</span><span class="v"><span class="dot">●</span> vega labs</span></div>
+        <div class="row"><span class="k">BASE</span><span class="v">umass amherst</span></div>
       </div>
     </div>
   </section>
 
-  <section id="projects">
-    <h2 class="sec-title reveal"><span class="hash">#</span>projects</h2>
-    <div class="proj-grid">
-      <a class="card reveal" href="https://github.com/sachittumuluri/cody-cartridge" target="_blank" rel="noopener">
-        <div class="glyph">🎛️</div>
-        <h3>cody-cartridge <span class="arrow">→</span></h3>
-        <p>A local-first Mac music player styled as a noir hardware deck. Cartridge library, interference-styled UI, fully offline.</p>
-        <div class="tags"><span class="tag">electron</span><span class="tag">react</span><span class="tag">typescript</span></div>
+  <section id="rack">
+    <h2 class="sec-title reveal">the rack</h2>
+    <p class="sec-sub reveal">// six tapes, all killer, no filler</p>
+    <div class="rack">
+      <a class="tape reveal" href="https://github.com/sachittumuluri/cody-cartridge" target="_blank" rel="noopener">
+        <div class="label"><div class="side"><span>SIDE A</span><span>C-90</span></div><h3>cody-cartridge</h3></div>
+        <div class="window"><span class="reel"></span><span class="reel"></span></div>
+        <p>A Mac music player cosplaying as noir hardware. Local files only, works offline, the vibes are non-negotiable.</p>
+        <div class="foot"><span class="fmt">electron · react · ts</span><span class="go">play ▸</span></div>
       </a>
-      <a class="card reveal" href="https://github.com/sachittumuluri/vega-rules" target="_blank" rel="noopener">
-        <div class="glyph">🤖</div>
-        <h3>vega-rules <span class="arrow">→</span></h3>
-        <p>Deterministic detection rules for a sales-pipeline agent — rules in code, judgment in the model.</p>
-        <div class="tags"><span class="tag">python</span><span class="tag">llm agents</span><span class="tag">mit</span></div>
+      <a class="tape reveal" href="https://github.com/sachittumuluri/vega-rules" target="_blank" rel="noopener">
+        <div class="label"><div class="side"><span>SIDE A</span><span>C-60</span></div><h3>vega-rules</h3></div>
+        <div class="window"><span class="reel"></span><span class="reel"></span></div>
+        <p>Deterministic detection rules for a sales agent. The boring half of AI — the half that has to be right.</p>
+        <div class="foot"><span class="fmt">python · agents</span><span class="go">play ▸</span></div>
       </a>
-      <a class="card reveal" href="https://github.com/sachittumuluri/strattrust" target="_blank" rel="noopener">
-        <div class="glyph">📊</div>
-        <h3>strattrust <span class="arrow">→</span></h3>
-        <p>Standardized validation and reproducible scorecards for systematic trading strategies.</p>
-        <div class="tags"><span class="tag">quant</span><span class="tag">jupyter</span><span class="tag">python</span></div>
+      <a class="tape reveal" href="https://github.com/sachittumuluri/strattrust" target="_blank" rel="noopener">
+        <div class="label"><div class="side"><span>SIDE B</span><span>C-60</span></div><h3>strattrust</h3></div>
+        <div class="window"><span class="reel"></span><span class="reel"></span></div>
+        <p>Scorecards that make trading strategies show their work. If it can't survive a re-run, it wasn't alpha.</p>
+        <div class="foot"><span class="fmt">python · jupyter</span><span class="go">play ▸</span></div>
       </a>
-      <a class="card reveal" href="https://github.com/sachittumuluri/maif-backtester" target="_blank" rel="noopener">
-        <div class="glyph">🏦</div>
-        <h3>maif-backtester <span class="arrow">→</span></h3>
+      <a class="tape reveal" href="https://github.com/sachittumuluri/maif-backtester" target="_blank" rel="noopener">
+        <div class="label"><div class="side"><span>SIDE B</span><span>C-90</span></div><h3>maif-backtester</h3></div>
+        <div class="window"><span class="reel"></span><span class="reel"></span></div>
         <p>MAIF Quant Lab's backtester and hosted research terminal — strategy simulation with a live front end.</p>
-        <div class="tags"><span class="tag">backtesting</span><span class="tag">python</span></div>
+        <div class="foot"><span class="fmt">python · quant</span><span class="go">play ▸</span></div>
       </a>
-      <a class="card reveal" href="https://github.com/sachittumuluri/VentriCode" target="_blank" rel="noopener">
-        <div class="glyph">🫀</div>
-        <h3>VentriCode <span class="arrow">→</span></h3>
-        <p>Ventricular tachycardia detection from ECG signals using topological data analysis and machine learning.</p>
-        <div class="tags"><span class="tag">tda</span><span class="tag">ml</span><span class="tag">ecg</span></div>
+      <a class="tape reveal" href="https://github.com/sachittumuluri/VentriCode" target="_blank" rel="noopener">
+        <div class="label"><div class="side"><span>SIDE A</span><span>C-120</span></div><h3>VentriCode</h3></div>
+        <div class="window"><span class="reel"></span><span class="reel"></span></div>
+        <p>Detecting ventricular tachycardia with topological data analysis. Donut math on heartbeats — works better than it has any right to.</p>
+        <div class="foot"><span class="fmt">python · tda · ecg</span><span class="go">play ▸</span></div>
       </a>
-      <a class="card reveal" href="https://github.com/sachittumuluri/USACOSolves" target="_blank" rel="noopener">
-        <div class="glyph">🐄</div>
-        <h3>USACOSolves <span class="arrow">→</span></h3>
-        <p>Competitive programming archive — USACO solutions in C++17. Bessie has been through a lot.</p>
-        <div class="tags"><span class="tag">c++17</span><span class="tag">algorithms</span></div>
+      <a class="tape reveal" href="https://github.com/sachittumuluri/USACOSolves" target="_blank" rel="noopener">
+        <div class="label"><div class="side"><span>SIDE B</span><span>C-120</span></div><h3>USACOSolves</h3></div>
+        <div class="window"><span class="reel"></span><span class="reel"></span></div>
+        <p>Years of USACO in C++17. Bessie the cow has seen things she cannot unsee.</p>
+        <div class="foot"><span class="fmt">c++17 · algorithms</span><span class="go">play ▸</span></div>
       </a>
     </div>
   </section>
 
-  <section id="contact">
-    <h2 class="sec-title reveal"><span class="hash">#</span>contact</h2>
-    <div class="contact-box reveal">
-      <p>Building something at the intersection of ML, markets, or medicine — or just want to argue about music players? My inbox is open.</p>
-      <div class="contact-links">
-        <a class="btn primary" href="mailto:sachi11umuluri@gmail.com">email me</a>
-        <a class="btn ghost" href="https://github.com/sachittumuluri" target="_blank" rel="noopener">github</a>
+  <section id="patch">
+    <h2 class="sec-title reveal">patch in</h2>
+    <p class="sec-sub reveal">// the inbox light is on</p>
+    <div class="patch reveal">
+      <p>Building something at the intersection of <b>ML, markets, or medicine</b> — or just want to argue about music players? Send signal.</p>
+      <div class="patch-links">
+        <a class="btn hot" href="mailto:sachi11umuluri@gmail.com">✉ email ▸</a>
+        <a class="btn cold" href="https://github.com/sachittumuluri" target="_blank" rel="noopener">github ▸</a>
       </div>
     </div>
   </section>
 </main>
 
 <footer>
-  <span>signals in, decisions out</span> · built with a <span class="pulse">♥</span>-shaped waveform · © <span id="yr"></span> sachit tumuluri
+  <div class="vu" aria-hidden="true">
+    <i style="animation-delay:0s"></i><i style="animation-delay:.14s"></i><i style="animation-delay:.06s"></i><i style="animation-delay:.2s"></i><i style="animation-delay:.1s"></i><i style="animation-delay:.17s"></i><i style="animation-delay:.04s"></i><i style="animation-delay:.22s"></i><i style="animation-delay:.08s"></i>
+  </div>
+  recorded live at umass amherst · © <span id="yr"></span> sachit tumuluri · no autoplay, you're welcome
 </footer>
 
 <script>
-  // ---- split name into animated letters ----
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ---------- boot sequence ----------
+  const bootEl = document.getElementById('boot');
+  const bootLines = document.getElementById('bootlines');
+  const BOOT = [
+    'SIGNAL DECK OS v2.6 — cold boot',
+    '> mounting /usr/sachit .......... ok',
+    '> tape heads .................... clean',
+    '> calibrating vu meters ......... ok',
+    '> markets ....................... listening',
+    '> heartbeats .................... listening',
+    '> music ......................... loud',
+    '> hello.',
+  ];
+  let bootDone = false;
+  function finishBoot() {
+    if (bootDone) return;
+    bootDone = true;
+    bootEl.classList.add('off');
+    document.body.classList.add('booted');
+    startDeck();
+    setTimeout(() => bootEl.remove(), 600);
+  }
+  if (reduced) {
+    finishBoot();
+  } else {
+    let li = 0, ci = 0, row = document.createElement('div');
+    row.className = 'line'; bootLines.appendChild(row);
+    (function typeBoot() {
+      if (bootDone) return;
+      const line = BOOT[li];
+      if (ci <= line.length) {
+        row.textContent = line.slice(0, ci++);
+        setTimeout(typeBoot, li === 0 ? 16 : 7);
+      } else if (++li < BOOT.length) {
+        ci = 0; row = document.createElement('div');
+        row.className = 'line'; bootLines.appendChild(row);
+        setTimeout(typeBoot, 120);
+      } else {
+        setTimeout(finishBoot, 650);
+      }
+    })();
+    bootEl.addEventListener('click', finishBoot);
+    addEventListener('keydown', finishBoot, { once: false });
+    setTimeout(finishBoot, 6000); // hard cap
+  }
+
+  // ---------- name: split + flicker on ----------
   const nameEl = document.getElementById('name');
   const words = nameEl.textContent.trim().split(/\s+/);
   nameEl.textContent = '';
   let idx = 0;
   for (const w of words) {
-    const wordSpan = document.createElement('span');
-    wordSpan.className = 'word';
+    const ws = document.createElement('span');
+    ws.className = 'word';
     for (const ch of w) {
       const s = document.createElement('span');
       s.className = 'ch';
       s.textContent = ch;
-      s.style.animationDelay = (0.35 + idx * 0.06) + 's, ' + (2.2 + idx * 0.06) + 's';
-      wordSpan.appendChild(s);
+      const d = 0.15 + idx * 0.07 + Math.random() * 0.12;
+      s.style.animationDelay = d + 's';
+      s.addEventListener('animationend', () => s.classList.add('lit'), { once: true });
+      ws.appendChild(s);
       idx++;
     }
-    nameEl.appendChild(wordSpan);
+    nameEl.appendChild(ws);
   }
 
-  // ---- typewriter ----
-  const phrases = [
-    'machine learning × quantitative research',
-    'building ai agents at vega labs',
-    'topological data analysis on ecg signals',
-    'noir-grade software for macos',
+  // ---------- now playing rotation ----------
+  const TRACKS = [
+    ['01 — building vega labs', '3:42', 'side A'],
+    ['02 — donut math on heartbeats', '4:07', 'side A'],
+    ['03 — making backtests honest', '2:58', 'side B'],
+    ['04 — noir-grade music software', '5:13', 'side B'],
+    ['05 — bessie does graph theory', '3:21', 'side B'],
   ];
-  const typed = document.getElementById('typed');
-  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduced) {
-    typed.textContent = phrases[0];
-  } else {
-    let pi = 0, ci = 0, deleting = false;
-    (function tick() {
-      const p = phrases[pi];
-      typed.textContent = p.slice(0, ci);
-      let dt = deleting ? 26 : 52;
-      if (!deleting && ci === p.length) { dt = 2200; deleting = true; }
-      else if (deleting && ci === 0) { deleting = false; pi = (pi + 1) % phrases.length; dt = 350; }
-      else ci += deleting ? -1 : 1;
-      setTimeout(tick, dt);
-    })();
+  const trackEl = document.getElementById('track');
+  const lenEl = document.getElementById('track-len');
+  const sideEl = document.getElementById('tape-side');
+  const progEl = document.getElementById('progress');
+  let ti = 0, deckStarted = false;
+  function playTrack() {
+    const [t, len, side] = TRACKS[ti];
+    trackEl.textContent = t;
+    lenEl.textContent = len;
+    sideEl.textContent = side;
+    progEl.classList.remove('play');
+    void progEl.offsetWidth; // restart the css animation
+    progEl.classList.add('play');
+    ti = (ti + 1) % TRACKS.length;
+  }
+  function startDeck() {
+    if (deckStarted) return;
+    deckStarted = true;
+    playTrack();
+    if (!reduced) setInterval(playTrack, 7000);
   }
 
-  // ---- constellation canvas ----
-  const cv = document.getElementById('sky');
-  const cx = cv.getContext('2d');
-  let W, H, pts = [];
-  const mouse = { x: -9999, y: -9999 };
-  function resize() {
-    W = cv.width = innerWidth * devicePixelRatio;
-    H = cv.height = innerHeight * devicePixelRatio;
-    cv.style.width = innerWidth + 'px';
-    cv.style.height = innerHeight + 'px';
-    const n = Math.min(130, Math.floor(innerWidth * innerHeight / 14000));
-    pts = Array.from({ length: n }, () => ({
-      x: Math.random() * W, y: Math.random() * H,
-      vx: (Math.random() - 0.5) * 0.18 * devicePixelRatio,
-      vy: (Math.random() - 0.5) * 0.18 * devicePixelRatio,
-      r: (Math.random() * 1.3 + 0.5) * devicePixelRatio,
-    }));
-  }
-  addEventListener('resize', resize);
-  addEventListener('pointermove', e => { mouse.x = e.clientX * devicePixelRatio; mouse.y = e.clientY * devicePixelRatio; });
-  addEventListener('pointerleave', () => { mouse.x = mouse.y = -9999; });
-  resize();
-  const LINK = 130 * devicePixelRatio;
-  function frame() {
-    cx.clearRect(0, 0, W, H);
-    for (const p of pts) {
-      p.x += p.vx; p.y += p.vy;
-      if (p.x < 0 || p.x > W) p.vx *= -1;
-      if (p.y < 0 || p.y > H) p.vy *= -1;
-      const dm = Math.hypot(p.x - mouse.x, p.y - mouse.y);
-      if (dm < 180 * devicePixelRatio && dm > 0.01) {
-        p.x += (p.x - mouse.x) / dm * 0.35;
-        p.y += (p.y - mouse.y) / dm * 0.35;
-      }
-      cx.beginPath();
-      cx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      cx.fillStyle = 'rgba(160, 190, 255, 0.55)';
-      cx.fill();
-    }
-    for (let i = 0; i < pts.length; i++) {
-      for (let j = i + 1; j < pts.length; j++) {
-        const a = pts[i], b = pts[j];
-        const d = Math.hypot(a.x - b.x, a.y - b.y);
-        if (d < LINK) {
-          cx.beginPath();
-          cx.moveTo(a.x, a.y); cx.lineTo(b.x, b.y);
-          cx.strokeStyle = 'rgba(109, 140, 220, ' + (0.14 * (1 - d / LINK)) + ')';
-          cx.lineWidth = devicePixelRatio * 0.7;
-          cx.stroke();
-        }
-      }
-    }
-    if (!reduced) requestAnimationFrame(frame);
-  }
-  frame();
-
-  // ---- scroll reveals ----
+  // ---------- scroll reveals ----------
   const io = new IntersectionObserver(es => es.forEach(e => {
     if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
   }), { threshold: 0.12 });
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-
-  // ---- card cursor glow ----
-  document.querySelectorAll('.card').forEach(c => c.addEventListener('pointermove', e => {
-    const r = c.getBoundingClientRect();
-    c.style.setProperty('--mx', (e.clientX - r.left) + 'px');
-    c.style.setProperty('--my', (e.clientY - r.top) + 'px');
-  }));
 
   document.getElementById('yr').textContent = new Date().getFullYear();
 </script>
